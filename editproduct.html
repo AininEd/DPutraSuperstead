@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="dputraproduct.css">
+</head>
+<body>
+    <img src="dputraimg/applogodputra.png" class="logoimg">
+    <div class="mytitle">D'Putra Products</div>
+    <hr><br><br>
+    <div class="boxform">
+        <div class="titleform">Edit Product<hr></div>
+        <form id="editProductForm">
+            <table>
+                <tr>
+                    <td><br><br>Product Name &nbsp;&nbsp;&nbsp;&nbsp;<br><br></td>
+                    <td><br><br><input type="text" name="proname" id="proname" class="tinput"><br><br></td>
+                </tr>
+                <tr>
+                    <td>Product Pictures<br><br></td>
+                    <td><input type="file" name="propic" id="propic" class="tinput"><br><br></td>
+                </tr>
+                <tr>
+                    <td>Status<br><br></td>
+                    <td>
+                        <input type="radio" name="prostat" id="halal" value="Halal">Halal
+                        <input type="radio" name="prostat" id="nonHalal" value="Non-Halal">Non-Halal
+                        <br><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Product Price<br><br></td>
+                    <td><input type="number" name="proprice" id="proprice" placeholder="RM0.00" class="tinput"><br><br></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="button" id="updatePro" class="btnproduct">Update Product</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <!-- Add the JavaScript code here -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getFirestore, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
+
+        // Your Firebase configuration here (replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Reference to Firestore and Storage
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Get the product ID from the URL query parameters (optional)
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('productId');
+
+        // Get the product data from Firestore and populate the form
+        async function loadProductDataForEditing(productId) {
+            try {
+                if (!productId) {
+                    alert("Product ID not found.");
+                    return;
+                }
+
+                // Use the provided productId directly to load the product data
+                const productRef = doc(db, "Products", productId);
+                const productDoc = await getDoc(productRef);
+
+                if (productDoc.exists()) {
+                    const productData = productDoc.data();
+                    document.getElementById("proname").value = productData.Product_Name;
+                    // Set the appropriate radio button based on the Halal_Status value
+                    if (productData.Halal_Status === "Halal") {
+                        document.getElementById("halal").checked = true;
+                    } else if (productData.Halal_Status === "Non-Halal") {
+                        document.getElementById("nonHalal").checked = true;
+                    }
+                    document.getElementById("proprice").value = productData.Price;
+                } else {
+                    alert("Product not found.");
+                    window.location.href = "dputraproduct.html"; // Redirect to home page if product not found
+                }
+            } catch (error) {
+                console.error("Error loading product data:", error);
+            }
+        }
+
+        // Call the function to load product data for editing (only if productId is provided)
+        loadProductDataForEditing(productId);
+
+        // Update the product data in Firestore when the "Update Product" button is clicked
+        document.getElementById("updatePro").addEventListener("click", async () => {
+            try {
+                const proname = document.getElementById("proname").value;
+                const proprice = document.getElementById("proprice").value;
+                const prostat = document.querySelector('input[name="prostat"]:checked').value;
+                const propic = document.getElementById("propic").files[0];
+
+                if (!productId) {
+                    alert("Product ID not found.");
+                    return;
+                }
+
+                // Update the product data in Firestore (use the provided productId)
+                const productRef = doc(db, "Products", productId);
+                await updateDoc(productRef, {
+                    Product_Name: proname,
+                    Price: proprice,
+                    Halal_Status: prostat
+                });
+
+                // If a new image is selected, upload it to Firebase Storage
+                if (propic) {
+                    const storageRef = ref(storage, `productImages/${propic.name}`);
+                    await uploadBytes(storageRef, propic);
+                    const downloadURL = await getDownloadURL(storageRef);
+                    // Update the Picture_URL in Firestore with the new download URL
+                    await updateDoc(productRef, { Picture_URL: downloadURL });
+                }
+
+                alert("Product updated.");
+                window.location.href = "dputraproduct.html";
+            } catch (error) {
+                console.error("Error updating product:", error);
+            }
+        });
+    </script>
+</body>
+</html>

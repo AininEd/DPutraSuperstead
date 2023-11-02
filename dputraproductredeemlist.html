@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D'PUTRA PRODUCT</title>
+    <link rel="stylesheet" href="dputraproduct.css">
+</head>
+<body>
+    <img src="dputraimg/applogodputra.png" class="logoimg">
+    <div class="mytitle">D'Putra Redeem Products</div>
+    <hr><br><br>
+    <table class="mytable" id="productTable">
+        <tr>
+            <th>No.</th>
+            <th>Product Name</th>
+            <th>Product Picture</th>
+            <th>Point</th>
+            <th class="myrow">Status</th>
+        </tr>
+    </table>
+    <div class="box1"><a href="addredeemproduct.html" class="addbtn" target="content" title="Add Product">+</a></div>
+
+    <script type="module">
+        // Import Firebase Realtime Database functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getDatabase, ref, get, query, orderByChild, remove } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+
+        // Import Firebase Firestore functions
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+                    apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+                    authDomain: "membershipdputra.firebaseapp.com",
+                    databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+                    projectId: "membershipdputra",
+                    storageBucket: "membershipdputra.appspot.com",
+                    messagingSenderId: "328830670700",
+                    appId: "1:328830670700:web:4f84714dc72f06e5088549",
+                    measurementId: "G-WE1CGQQPH0"
+                };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Get a reference to the Realtime Database
+        const database = getDatabase();
+        const redeemProductRef = ref(database, 'MembersOfDputra/redeemproduct');
+
+        // Reference to the HTML table element
+        const productTable = document.getElementById('productTable');
+
+        // Function to populate the table with data and buttons
+        const populateTable = (data) => {
+            let tableHTML = '<tr><th>No.</th><th>Product Name</th><th>Product Picture</th><th>Point</th><th class="myrow">Action</th></tr>';
+            let index = 1;
+            data.forEach((child) => {
+                const product = child.val();
+                const productId = child.key;
+
+                // Create an <img> element to display the product image
+                const productImage = `<img src="${product.pic}" alt="${product.name}" class="product-image">`;
+
+                tableHTML += `
+                    <tr>
+                        <td>${index}</td>
+                        <td>${product.name}</td>
+                        <td>${productImage}</td>
+                        <td>${product.point}</td>
+                        <td class="myrow">${product.status}</td>
+                    </tr>
+                `;
+                index++;
+            });
+            productTable.innerHTML = tableHTML;
+        };
+
+        // Function to fetch data and populate the table
+        const fetchDataAndPopulateTable = () => {
+            const productQuery = query(redeemProductRef, orderByChild('name'));
+            get(productQuery)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        // Data exists, populate the table
+                        populateTable(snapshot);
+                    } else {
+                        // Data doesn't exist, handle accordingly
+                        productTable.innerHTML = '<p>No products found.</p>';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                });
+        };
+
+        // Call the function to display data when the page loads
+        fetchDataAndPopulateTable();
+    </script>
+</body>
+</html>

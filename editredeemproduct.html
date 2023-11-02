@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Redeem Product</title>
+    <link rel="stylesheet" href="editredeemproduct.css">
+</head>
+<body>
+    <h1>Edit Redeem Product</h1>
+
+    <!-- Form for editing product details -->
+    <form id="editProductForm" enctype="multipart/form-data">
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="productName"><br>
+
+        <label for="productPoint">Point:</label>
+        <input type="number" id="productPoint" name="productPoint"><br>
+
+        <label for="productImage">Product Image:</label>
+        <input type="file" id="productImage" name="productImage"><br>
+
+        <!-- Add more fields as needed for updating the product -->
+
+        <button type="button" onclick="editProduct()">Save Changes</button>
+    </form>
+
+    <script type="module">
+        // Import Firebase libraries
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "Your-API-Key",
+            authDomain: "Your-Auth-Domain",
+            databaseURL: "Your-Database-URL",
+            projectId: "Your-Project-ID",
+            storageBucket: "Your-Storage-Bucket",
+            messagingSenderId: "Your-Messaging-Sender-ID",
+            appId: "Your-App-ID",
+            measurementId: "Your-Measurement-ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Get a reference to the Firebase Realtime Database
+        const database = getDatabase();
+
+        // Get the product key from the URL (you'll need to implement this logic)
+        const urlParams = new URLSearchParams(window.location.search);
+        const productKey = urlParams.get("productId");
+
+        if (!productKey) {
+            alert('Product ID not found in the URL.');
+        }
+
+        // Reference to the specific product in the database
+        const productRef = ref(database, `MembersOfDputra/redeemproduct/${productKey}`);
+
+        // Define the editProduct function
+        const editProduct = () => {
+            // Get the values from the form
+            const newName = document.getElementById('productName').value;
+            const newPoint = document.getElementById('productPoint').value;
+
+            // Get the selected product image file
+            const productImageFile = document.getElementById('productImage').files[0];
+
+            // You can handle the image upload and update logic here
+            // For example, you can upload the image to a storage bucket and get the download URL
+
+            // Once you have the updated image URL (if applicable), update the product data
+            const productData = {
+                name: newName,
+                point: newPoint,
+                // Add more fields as needed for updating the product
+            };
+
+            set(productRef, productData)
+                .then(() => {
+                    alert('Product updated successfully');
+                    // You can redirect to another page or perform other actions
+                })
+                .catch((error) => {
+                    console.error('Error updating product:', error);
+                });
+        };
+    </script>
+</body>
+</html>

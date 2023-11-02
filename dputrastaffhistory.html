@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DPutra User Activities History</title>
+    <link rel="stylesheet" href="dputraproduct.css">
+</head>
+<body>
+    <img src="dputraimg/applogodputra.png" class="logoimg">
+    <div class="mytitle">User History<br><hr><br></div>
+    <div>
+        <table>
+            <tr>
+                <th>Date & Time</th>
+                <th>Activities</th>
+                <th>Description</th>
+            </tr>
+            <!-- Add a tbody element to your table to hold the data rows -->
+            <tbody id="staffTableBody"></tbody>
+        </table>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getFirestore, collection, query, getDocs } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Get the user's unique ID from sessionStorage
+        const userId = sessionStorage.getItem("userId");
+
+        // Function to fetch and display data
+        async function displayDataInTable() {
+            const productTable = document.querySelector("#staffTableBody"); // Update the selector to match your HTML structure
+
+            // Query the Firestore "activityHistory" collection for the specific user
+            const q = query(collection(db, "Workers", userId, "activityHistory"));
+            const querySnapshot = await getDocs(q);
+
+            // Iterate through the documents and populate the table
+            querySnapshot.forEach((doc) => {
+                const activityData = doc.data();
+
+                // Create a new table row for each activity
+                const newRow = document.createElement("tr");
+
+                // Create table cells for each column
+                const dateCell = document.createElement("td");
+                dateCell.textContent = activityData.date.toDate().toLocaleString(); // Format the date
+
+                const activityCell = document.createElement("td");
+                activityCell.textContent = activityData.activity;
+
+                const descriptionCell = document.createElement("td");
+                descriptionCell.textContent = activityData.description;
+
+                // Append cells to the new row
+                newRow.appendChild(dateCell);
+                newRow.appendChild(activityCell);
+                newRow.appendChild(descriptionCell);
+
+                // Append the new row to the table
+                productTable.appendChild(newRow);
+            });
+        }
+
+        // Call the function to display data when the page loads
+        window.addEventListener("DOMContentLoaded", () => {
+            displayDataInTable();
+        });
+    </script>
+</body>
+</html>

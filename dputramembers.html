@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View All Staff</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+    <img src="dputraimg/applogodputra.png" class="logoimg">
+    <div class="mytitle">All Member Lists<br><hr><br></div>
+    <div>
+        <table>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Point</th>
+                <th>Last Login</th>
+                <th>Last Logout</th>
+                <th>Action</th>
+            </tr>
+            <!-- Add a tbody element to your table to hold the data rows -->
+            <tbody id="memberTableBody"></tbody>
+        </table>
+    </div>
+    <div class="box1"><a href="addmember.html" class="addbtn" target="content" title="Add Member">+</a></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Reference to the table body
+        const memberTableBody = document.getElementById("memberTableBody");
+
+        // Function to fetch and display member data from Firebase Realtime Database
+        function displayMemberData() {
+            const db = getDatabase(app);
+            const usersRef = ref(db, "MembersOfDputra/customers");
+
+            get(usersRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        snapshot.forEach((childSnapshot) => {
+                            const memberID = childSnapshot.key;
+                            const memberData = childSnapshot.val();
+
+                            // Create a new row for each member
+                            const newRow = document.createElement("tr");
+                            newRow.innerHTML = `
+                                <td>${memberID}</td>
+                                <td>${memberData.name}</td>
+                                <td>${memberData.email}</td>
+                                <td>${memberData.phone}</td>
+                                <td>${memberData.points}</td>
+                                <td>${memberData.lastLogin ? new Date(memberData.lastLogin).toLocaleString() : "N/A"}</td>
+                                <td>${memberData.lastLogout ? new Date(memberData.lastLogout).toLocaleString() : "N/A"}</td>
+                                <td><a href="#">Edit</a>&nbsp;<a href="#">Delete</a></td>
+                            `;
+
+                            // Append the new row to the table body
+                            memberTableBody.appendChild(newRow);
+                        });
+                    } else {
+                        console.log("No data found.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+        // Call the function to display member data when the page loads
+        window.addEventListener("DOMContentLoaded", () => {
+            displayMemberData();
+        });
+    </script>
+</body>
+</html>

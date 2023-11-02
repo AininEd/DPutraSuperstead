@@ -1,0 +1,71 @@
+/*Redemption Page*/
+.mytitle{
+    padding: 20px;
+    font-family: 'Century Gothic';
+    font-weight: 1000;
+    font-size: 30px;
+    color:#3B271D;
+}
+table{
+    font-family: 'Century Gothic';
+    text-align: left;
+    width:100%;
+}
+
+.myproductimg{
+    height: 100px;
+    width: 100px;
+}
+
+.product-image {
+    max-width: 100px; /* Adjust this value to your desired maximum width */
+    max-height: 100px; /* Adjust this value to your desired maximum height */
+    width: auto;
+    height: auto;
+}
+
+td{
+    padding: 10px;
+    border: 2px solid silver;
+}
+
+th{
+    padding: 5px;
+    background-color: #C7934E;
+}
+
+a{
+    text-decoration: none;
+}
+
+
+/*Product Page*/
+.addbtn{
+    background-color: #3B271D;
+    padding:20px;
+    border-radius: 200%;
+    color: white;
+}
+
+.box1 {
+    clear: both;
+    text-align: right; /* Optional: Align the button to the right side */
+    margin-top: 20px; /* Optional: Add margin for spacing */
+}
+
+/*Staff Page*/
+.logoimg{
+    position: absolute;
+    top:15px;
+    right: 30px;
+    width: 100px;
+    height: 45px;
+}
+
+/* Add this CSS in your home.css file */
+.product-image {
+    max-width: 100px; /* Set a maximum width for the image */
+    height: auto; /* Automatically adjust the height to maintain aspect ratio */
+    display: block; /* Remove any extra spacing around the image */
+    margin: 0 auto; /* Center the image horizontally within the table cell */
+}

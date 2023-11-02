@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>STAFF LOGIN PAGE</title>
+    <link rel="stylesheet" href="login.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div><img src="dputraimg/bgmarket.jpg" class="bgimg"></div>
+    <div><img src="dputraimg/bgblurb.png" class="box2"></div>
+    <div class="lblogin">LOGIN</div>
+    <div class="box3">
+        <form method="post" action="StaffPage.html">
+            <table class="mytable">
+                <tr>
+                    <td><input type="text" name="smail" id="smail" placeholder="Email" class="inputstaff"/><br><br></td>
+                </tr>
+                <tr>
+                    <td><input type="password" name="spass" id="spass" placeholder="Password" class="inputstaff"/></td>
+                </tr>
+            </table>
+            <div class="boxlink"><a href="#" id="forgotPasswordLink" class="linkforpwd">Forgot Password?</a></div>
+            <button type="button" id="logStaff" name="logstaff" class="btnlogin">LOGIN</button>
+        </form>
+    </div>
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Forgot Password</h2>
+            <p>Enter your email address to receive a password reset link.</p>
+            <input type="email" id="resetEmail" placeholder="Email" required>
+            <button id="sendResetEmail">Send Reset Email</button>
+            <p id="resetMessage"></p>
+        </div>
+    </div>
+    <div class="box1"><img src="dputraimg/adminfirstpg.png" class="myimg"></div>
+    <div class="linksignup">Not a staff? <a href="Login_Admin.html" class="signup">Click Here</a></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, doc, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+        import { initializeAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = initializeAuth(app); // Initialize Firebase Authentication
+
+        const logStaffButton = document.getElementById("logStaff");
+        const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+        const forgotPasswordModal = document.getElementById("forgotPasswordModal");
+        const closeModal = document.getElementById("closeModal");
+        const sendResetEmailButton = document.getElementById("sendResetEmail");
+        const resetEmailInput = document.getElementById("resetEmail");
+        const resetMessage = document.getElementById("resetMessage");
+
+        logStaffButton.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            const smail = document.getElementById("smail").value;
+            const spass = document.getElementById("spass").value;
+
+            if (!smail.trim() && !spass.trim()) {
+                alert("Please fill in the blank!");
+            } else if (!smail.trim()) {
+                alert("Please enter your email.");
+            } else if (!spass.trim()) {
+                alert("Please enter your password.");
+            } else {
+                const q = query(collection(db, "Workers"), where("email", "==", smail));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    alert("Email not registered. Please contact your HR Department.");
+                } else {
+                    const userDoc = querySnapshot.docs[0];
+
+                    if (userDoc.data().password === spass) {
+                        const userRef = doc(db, "Workers", userDoc.id);
+                        const currentTimestamp = new Date();
+
+                        await setDoc(userRef, { lastLogin: currentTimestamp }, { merge: true });
+
+                        const activityHistoryRef = collection(userRef, "activityHistory");
+                        const newActivityEntry = {
+                            date: currentTimestamp,
+                            activity: "Login",
+                            description: "User logged in",
+                        };
+
+                        await addDoc(activityHistoryRef, newActivityEntry);
+
+                        // Store the user's unique ID in sessionStorage
+                        sessionStorage.setItem("userId", userDoc.id);
+                        window.location.href = "StaffPage.html";
+                    } else {
+                        alert("Invalid password. Please try again.");
+                    }
+                }
+            }
+        });
+
+        forgotPasswordLink.addEventListener("click", () => {
+            openResetModal();
+        });
+
+        closeModal.addEventListener("click", () => {
+            closeResetModal();
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target === forgotPasswordModal) {
+                closeResetModal();
+            }
+        });
+
+        sendResetEmailButton.addEventListener("click", async () => {
+            const email = resetEmailInput.value;
+
+            try {
+                // Send the password reset email using Firebase Authentication
+                await sendPasswordResetEmail(auth, email);
+                
+                // Password reset email sent successfully
+                resetMessage.textContent = "Password reset email sent. Check your inbox and follow the instructions.";
+                
+                // Prompt user to set a new password after resetting the email
+                openResetModal();
+            } catch (error) {
+                resetMessage.textContent = `Error: ${error.message}`;
+            }
+        });
+
+        function openResetModal() {
+            forgotPasswordModal.style.display = "block";
+        }
+
+        function closeResetModal() {
+            forgotPasswordModal.style.display = "none";
+            resetEmailInput.value = "";
+            resetMessage.textContent = "";
+        }
+    </script>
+</body>
+</html>

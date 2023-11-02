@@ -1,0 +1,64 @@
+/* calcPoint.css */
+
+/* Center the form */
+center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Style the form container */
+.boxForm {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px #000;
+}
+
+/* Style labels */
+label {
+    font-size: 16px;
+    color: maroon;
+    font-family: "Tahini", sans-serif;
+}
+
+/* Style user inputs */
+.userInput {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    margin: 5px 0;
+}
+
+/* Style buttons */
+.Button {
+    background-color: maroon;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.Button:hover {
+    background-color: darkred;
+}
+
+/* Style the reset button */
+input[type="reset"] {
+    background-color: #ccc;
+    color: #000;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+input[type="reset"]:hover {
+    background-color: #999;
+}

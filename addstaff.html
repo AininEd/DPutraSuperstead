@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Staff Register</title>
+        <link rel="stylesheet" href="add.css">
+    </head>
+    <body>
+        <div>
+            <!--<img src="dputraimg/congratsstaff.png" class="imglogo">-->
+        </div>
+        
+        <br><br>
+        <div class="boxform">
+            <div class="titleform">Apply as Employee<hr></div>
+            <form method="post" action="dputrastaff.html">
+                <table>
+                    <tr>
+                        <td><br><br>Name<br><br></td>
+                        <td><br><br><input type="name" name="sname" class="tinput"><br><br></td>
+                    </tr>
+                    <tr>
+                        <td>Position <br><br></td>
+                        <td><input type="radio" name="sposition" value="Admin">Admin
+                            <input type="radio" name="sposition" value="Staff">Staff <br><br></td>
+                    </tr>
+                    <tr>
+                        <td>Gender <br><br></td>
+                        <td><input type="radio" name="sgender" value="Male">Male
+                            <input type="radio" name="sgender" value="Female">Female <br><br></td>
+                    </tr>
+                    <tr>
+                        <td>Email<br><br></td>
+                        <td><input type="email" name="smail" placeholder="xxx@xxxxx.com" class="tinput"><br><br></td>
+                    </tr>
+                    <tr>
+                        <td>Telephone No. &nbsp;&nbsp;&nbsp;<br><br></td>
+                        <td><input type="tel" name="stel" placeholder="+60" class="tinput"><br><br></td>
+                    </tr>
+                    <tr>
+                        <td>Profile Picture<br><br></td>
+                        <td><input type="file" name="spicture" class="tinput"><br><br></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="submit" name="btnsubmit" value="REGISTER" class="btnregister"></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        
+    </body>
+</html>
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getFirestore ,collection,} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+    authDomain: "membershipdputra.firebaseapp.com",
+    databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+    projectId: "membershipdputra",
+    storageBucket: "membershipdputra.appspot.com",
+    messagingSenderId: "328830670700",
+    appId: "1:328830670700:web:4f84714dc72f06e5088549",
+    measurementId: "G-WE1CGQQPH0"
+  };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Initialize Cloud Firestore and get a reference to the service
+    const db = getFirestore(app);
+
+  </script>

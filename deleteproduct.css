@@ -1,0 +1,104 @@
+/* Reset some default styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.logoimg{
+    position: absolute;
+    top:15px;
+    right: 30px;
+    width: 100px;
+    height: 45px;
+}
+
+.mytitle{
+    padding: 20px;
+    font-family: 'Century Gothic';
+    font-weight: 1000;
+    font-size: 30px;
+    color:#3B271D;
+}
+
+/* Center the container */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Style the message box */
+.message-box {
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    width: 300px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Style the paragraph */
+p {
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+/* Style the buttons */
+button {
+    background-color: #FFC000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #FFA000;
+}
+
+/* Style the buttons in a flex container */
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+/* Center the .delbox */
+.delbox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    width: 300px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Style the paragraph */
+.delbox p {
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+/* Style the buttons */
+.delbox button {
+    background-color: #FFC000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delbox button:hover {
+    background-color: #FFA000;
+}

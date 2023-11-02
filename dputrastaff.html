@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View All Staff</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+    <img src="dputraimg/applogodputra.png" class="logoimg">
+    <div class="mytitle">All Staff Lists<br><hr><br></div>
+    <div>
+        <table>
+            <tr>
+                <th>Staff ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Position</th>
+                <th>Last Login</th>
+                <th>Last Logout</th>
+                <th>Action</th>
+            </tr>
+            <!-- Add a tbody element to your table to hold the data rows -->
+            <tbody id="staffTableBody"></tbody>
+        </table>
+    </div>
+    <div class="box1"><a href="RegisterStaff.html" class="addbtn" target="content" title="Add Staff">+</a></div>
+
+    <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getFirestore, collection, query, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Initialize Cloud Firestore and get a reference to the service
+    const db = getFirestore(app);
+
+    // Reference to the table body
+    const staffTableBody = document.getElementById("staffTableBody");
+
+    // Function to fetch and display staff data
+    async function displayStaffData() {
+        // Query the Firestore "Workers" collection
+        const q = query(collection(db, "Workers"));
+        const querySnapshot = await getDocs(q);
+
+        // Iterate through the documents and populate the table
+        querySnapshot.forEach((doc) => {
+            const staffData = doc.data();
+            
+            // Create a new row for each staff member
+            const newRow = document.createElement("tr");
+
+            // Generate a unique Staff ID for each staff member
+            const staffID = doc.id;
+
+            newRow.innerHTML = `
+                <td>${staffID}</td>
+                <td>${staffData.name}</td>
+                <td>${staffData.email}</td>
+                <td>Staff</td>
+                <td>${staffData.lastLogin ? staffData.lastLogin.toDate().toLocaleString() : "N/A"}</td>
+                <td>${staffData.lastLogout ? staffData.lastLogout.toDate().toLocaleString() : "N/A"}</td>
+                <td>
+                    <a href="editstaff.html?staffId=${doc.id}">Edit</a>
+                    &nbsp;
+                    <a href="deletestaff.html?staffId=${doc.id}">Delete</a>
+                </td>
+            `;
+
+            // Append the new row to the table body
+            staffTableBody.appendChild(newRow);
+        });
+    }
+
+    // Function to delete staff member
+    async function deleteStaff(staffId) {
+        if (confirm("Are you sure you want to delete this staff member?")) {
+            try {
+                const staffRef = doc(db, "Workers", staffId);
+                await deleteDoc(staffRef);
+                alert("Staff member deleted successfully.");
+                // Reload the page to update the staff list
+                window.location.reload();
+            } catch (error) {
+                console.error("Error deleting staff:", error);
+                alert("Error deleting staff.");
+            }
+        }
+    }
+
+    // Call the function to display staff data when the page loads
+    window.addEventListener("DOMContentLoaded", () => {
+        displayStaffData();
+    });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+body{
+    background-image: url(bgmarket.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.boxregister{
+    background-image: url(bgblurb.png);
+    width: 680px;
+    height: 650px;
+    position: absolute;
+    margin-left: 250px;
+    margin-top: 50px;
+    
+}
+
+.boxlogo{
+    background-color: rgb(137, 80, 33);
+    width: 670px;
+    height: 650px;
+    margin-left: 50px;
+    position: absolute;
+    margin-top: 50px;
+}
+
+.logo1{
+
+    top:120px;
+    left: 80px;
+    height: 350px;
+    width: 450px;
+    position: absolute;
+    margin-left: 30px;
+    
+}
+
+form{
+    border: none;
+    border-radius: 5px;
+    width:300px;
+    padding: 15px;
+    font-family: 'Century Gothic';
+    font-size: 20px;
+    margin-left: 200px;
+    color:black;
+}
+
+.text1{
+    position: absolute;
+    top:10px;
+    left:150px;
+    color: #FFC000;
+    text-shadow: 10px 10px 10px black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 1000;
+    font-size: 70px;
+    text-align: center;
+}
+
+input{
+    border:none;
+    border-radius: 5px;
+    width:300px;
+    padding: 15px;
+    color: rgb(8, 8, 8);
+    text-align: left;
+    font-family: 'Century Gothic';
+    font-size: 15px;
+}
+
+.buttonregister{
+    position: absolute;
+    background-color: #FFC000;
+    top:420px;
+    left:385px;
+    border: none;
+    border-radius: 5px;
+    width:165px;
+    padding: 15px;
+    font-family: 'Century Gothic';
+    font-size: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 1000;
+    color:white;  
+    text-align: center;
+}
+.buttonregister2{
+    position: absolute;
+    background-color: #FFC000;
+    top:420px;
+    left:215px;
+    border: none;
+    border-radius: 5px;
+    width:165px;
+    padding: 15px;
+    font-family: 'Century Gothic';
+    font-size: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 1000;
+    color:white;  
+    text-align: center;
+}
+
+.inputbox{
+    position: absolute;
+    top:120px;
+    right: 180px;
+}
+
+.linklogin{
+    position: absolute;
+    color:white;
+    top:600px;
+    right:200px;
+    font-family: 'Century Gothic';
+}
+
+.login{
+    text-decoration: none;
+    color:#FFC000;
+}

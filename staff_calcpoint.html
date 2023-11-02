@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="calcPoint.css">
+    <title>Calculate User Point</title>
+</head>
+<body>
+    <center>
+        <form class="boxForm" name="myForm" method="post" onsubmit="process(); return false;">
+
+            <label>
+                <font size="6px" color="maroon" face="tahini">Redeem Point</font><br>
+            </label>  
+
+            <br><br>
+
+            <label>
+                <font size="4px" color="maroon" face="tahini">Email&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;</font>
+            </label> 
+
+            <input class="userInput" type="text" name="email" id="email">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <br><br>
+
+            <label>
+                <font size="4px" color="maroon" face="tahini">Total Pay&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;</font>
+            </label> 
+
+            <input class="userInput" type="text" name="cash" id="cash" placeholder="RM 0.00">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <br><br>
+
+            <button class="Button" type="button" id="submitData" name="submitData">Submit</button>
+        
+            &nbsp;&nbsp;&nbsp;&nbsp;
+
+            <input class="Button" type="reset" name="clearform" value="Reset">
+
+        </form>
+    </center>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getDatabase, ref, query, orderByChild, equalTo, get, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        const submitData = document.getElementById('submitData');
+
+        submitData.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const cash = parseFloat(document.getElementById("cash").value);
+
+            if (!email || isNaN(cash)) {
+                alert("Please fill in all fields and provide a valid cash amount.");
+                return;
+            }
+
+            // Function to update user points
+            async function updateUserPoints(userId, newPoints) {
+                const db = getDatabase(app);
+
+                // Define the data to update
+                const updateData = {
+                    points: newPoints
+                };
+
+                // Define the paths for update
+                const updates = {};
+                updates['/MembersOfDputra/customers/' + userId] = updateData;
+
+                try {
+                    // Update the user's points
+                    await update(ref(db), updates);
+
+                    alert("Success points update");
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("An error occurred while updating points. " + error.message);
+                }
+            }
+
+            // Query the Firebase Realtime Database to find the user with matching email
+            const usersRef = ref(getDatabase(app), "MembersOfDputra/customers");
+            const userQuery = query(usersRef, orderByChild('email'), equalTo(email));
+
+            try {
+                const userSnapshot = await get(userQuery);
+
+                if (userSnapshot.exists()) {
+                    // User with matching email found
+                    const userData = userSnapshot.val();
+                    const userId = Object.keys(userData)[0];
+                    const userPoints = userData[userId].points;
+                    console.log(`User email: ${email}, Points: ${userPoints}`);
+
+                    // Calculate points based on the payment amount
+                    let newPoints;
+                    if (cash < 20) {
+                        newPoints = 5;
+                    } else if (cash < 40) {
+                        newPoints = 20;
+                    } else if (cash < 60) {
+                        newPoints = 40;
+                    } else if (cash < 80) {
+                        newPoints = 60;
+                    } else {
+                        newPoints = 70;
+                    }
+
+                    console.log(`Old Points: ${userPoints}, Update Points: ${newPoints}`);
+
+                    // Update the user's points
+                    updateUserPoints(userId, newPoints);
+                } else {
+                    console.log(`User with email ${email} does not exist.`);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while fetching data. " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

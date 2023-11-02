@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ADD PRODUCT FOR REDEEM</title>
+    <link rel="stylesheet" href="add.css">
+</head>
+<body>
+    <div class="boxform">
+        <div class="titleform">New Redeem Product<hr></div>
+        <form id="productForm">
+            <table>
+                <tr>
+                    <td><br><br>Product Name &nbsp;&nbsp;&nbsp;&nbsp;<br><br></td>
+                    <td><br><br><input type="text" name="proname" id="proname" class="tinput"><br><br></td>
+                </tr>
+                <tr>
+                    <td>Product Pictures<br><br></td>
+                    <td><input type="file" name="propic" id="propic" class="tinput"><br><br></td>
+                </tr>
+                <tr>
+                    <td>Point<br><br></td>
+                    <td><input type="number" name="propoint" id="propoint" placeholder="0" class="tinput"><br><br></td>
+                </tr>
+                <tr>
+                    <td>Product Status</td>
+                    <td>
+                        <input type="checkbox" name="prostat" id="prostat" class="tinput">Active
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="button" id="redPro" name="redPro" class="btnproduct">ADD PRODUCT</button>
+                    </td>
+                </table>
+            </form>
+        </div>
+
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+            import { getDatabase, ref, push, query, orderByChild, equalTo, get } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+            import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-storage.js";
+
+            const firebaseConfig = {
+                    apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+                    authDomain: "membershipdputra.firebaseapp.com",
+                    databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+                    projectId: "membershipdputra",
+                    storageBucket: "membershipdputra.appspot.com",
+                    messagingSenderId: "328830670700",
+                    appId: "1:328830670700:web:4f84714dc72f06e5088549",
+                    measurementId: "G-WE1CGQQPH0"
+                };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+
+            // Get a reference to the database
+            const database = getDatabase();
+            // Get a reference to Firebase Storage
+            const storage = getStorage();
+
+            // Add an event listener to your "ADD PRODUCT" button
+            const addButton = document.getElementById('redPro');
+            addButton.addEventListener('click', async function() {
+                // Disable the button to prevent multiple clicks
+                addButton.disabled = true;
+
+                // Get the form input values
+                const productName = document.getElementById('proname').value;
+                const productPoint = document.getElementById('propoint').value;
+                const productPic = document.getElementById('propic').files[0]; // Get the selected image file
+                const productStatus = document.getElementById('prostat').checked ? 'active' : 'inactive'; // Check the status checkbox
+
+                // Get a reference to the "redeemproduct" child node
+                const redeemProductRef = ref(database, 'MembersOfDputra/redeemproduct');
+
+                // Check if the data already exists in the database
+                const productQuery = query(redeemProductRef, orderByChild('name'), equalTo(productName));
+                const snapshot = await get(productQuery);
+
+                if (!snapshot.exists()) {
+                    // Data doesn't exist, save the image to Firebase Storage
+                    const storageReference = storageRef(storage, `productImages/${productPic.name}`);
+                    const uploadTask = uploadBytes(storageReference, productPic);
+
+                    uploadTask.then(async () => {
+                        // Get the download URL of the uploaded image
+                        const imageUrl = await getDownloadURL(storageReference);
+
+                        // Create the product data object with the "status" field
+                        const productData = {
+                            name: productName,
+                            point: productPoint,
+                            pic: imageUrl,
+                            status: productStatus, // Save the status in the database
+                        };
+
+                        // Save the product data to the Realtime Database
+                        push(redeemProductRef, productData).then(() => {
+                            alert('Product added to the database!');
+                            // You can reset the form or take other actions here.
+
+                            // Re-enable the button after success
+                            addButton.disabled = false;
+                        }).catch((error) => {
+                            console.error('Error adding product:', error);
+                            // Re-enable the button in case of an error
+                            addButton.disabled = false;
+                        });
+                    }).catch((error) => {
+                        console.error('Error uploading image:', error);
+                        // Re-enable the button in case of an error
+                        addButton.disabled = false;
+                    });
+                } else {
+                    // Data already exists, show a message
+                    alert('Product with the same name already exists in the database.');
+
+                    // Re-enable the button
+                    addButton.disabled = false;
+                }
+            });
+        </script>
+    </body>
+</html>

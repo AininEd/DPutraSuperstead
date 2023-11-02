@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Page</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <div class="boxregister">
+        <br><br><br>
+        <div class="text1">REGISTER</div><br>
+        <div class="inputbox">
+            <form name="inventory" method="post" action="RegisterStaff.html">
+                <input type="text" name="sfname" id="sfname" placeholder="Your Name"><br><br>
+                <input type="email" name="smail" id="smail" placeholder="xxxxxx@xxxxx.com"><br><br>
+                <input type="text" name="sname" id="sname" placeholder="Username"><br><br>
+                <input type="password" name="spass" id="spass" placeholder="Password"><br><br>
+                <input type="password" name="sconpass" id="sconpass" placeholder="Confirm Password">
+                <input type="submit" name="btnRegOther" id="btnRegOther" class="buttonregister" value="REFRESH">
+                <button type="button" id="regStaff" name="regStaff" class="buttonregister2">ADD STAFF</button>
+            </form>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        const regStaffButton = document.getElementById("regStaff");
+
+        regStaffButton.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            // Get user registration data from the form
+            const sfname = document.getElementById("sfname").value;
+            const smail = document.getElementById("smail").value;
+            const sname = document.getElementById("sname").value;
+            const spass = document.getElementById("spass").value;
+
+            try {
+                // Create the user in Firebase Authentication
+                const userCredential = await createUserWithEmailAndPassword(auth, smail, spass);
+                const user = userCredential.user;
+
+                // Send email verification
+                await sendEmailVerification(user);
+
+                // Check if the "Staff" node exists, and create it if it doesn't
+                const staffRef = ref(database, "Staff");
+                get(staffRef).then((snapshot) => {
+                    if (!snapshot.exists()) {
+                        set(staffRef, {});
+                    }
+
+                    // Create a new child node under "Staff" with the user's UID and save the email
+                    const staffEmailRef = ref(staffRef, user.uid);
+                    set(staffEmailRef, smail);
+
+                    // Add a new document in collection "Workers" (users) in Firestore
+                    addDoc(collection(db, "Workers"), {
+                        name: sfname,
+                        email: smail,
+                        username: sname,
+                        password: spass,
+                        lastLogin: null,
+                        lastLogout: null,
+                        uid: user.uid
+                    });
+
+                    // Inform the user that registration and email verification were successful
+                    alert("Registration successful. Verification email sent. Please check your email and click the verification link to proceed to the login page.");
+                });
+            } catch (error) {
+                console.error("Error registering staff:", error);
+                alert("Registration failed. Please try again." + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ALL HISTORY</title>
+    <link rel="stylesheet" href="history.css">
+</head>
+<body>
+    <img src="dputraimg/applogodputra.png" class="logoimg">
+    <div class="mytitle">DPutra History<br><hr><br></div>
+
+    <div class="box1">  
+        <div><a href="dputraadminhistory.html" class="meBtn" target="content1" title="My History">Me</a></div>&nbsp;&nbsp;&nbsp;
+        <div><a href="dputraworkerhistory.html" class="meBtn" target="content1" title="Staff History">Staff</a></div>&nbsp;&nbsp;&nbsp;
+        <div><a href="dputramemberhistory.html" class="meBtn" target="content1" title="Members History">Members</a></div> 
+    </div>
+    <div class="box2">
+        <iframe class="myframe" name="content1" src="dputraadminhistory.html"></iframe>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+    </script>
+</body>
+</html>

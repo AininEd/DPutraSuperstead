@@ -1,0 +1,106 @@
+/* Page title */
+.mytitle {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 36px;
+    color: #3B271D;
+    text-align: center;
+}
+
+/* Table styles */
+table {
+    font-family: 'Arial', sans-serif;
+    text-align: left;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #F5F5F5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+table th {
+    background-color: #C7934E;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 16px;
+}
+
+table td {
+    padding: 10px;
+    border: 1px solid #E0E0E0;
+    font-size: 14px;
+}
+
+/* Product image styles */
+.product-image {
+    max-width: 100px;
+    max-height: 100px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+/* Action links styles */
+a {
+    text-decoration: none;
+    color: #FFC000;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #FFA000;
+}
+
+/* Add button styles */
+.addbtn {
+    background-color: #3B271D;
+    padding: 15px 30px;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.addbtn:hover {
+    background-color: #2A1A10;
+}
+
+/* Container for the "Add Product" button */
+.box1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Logo image styles */
+.logoimg {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    width: 100px;
+    height: 45px;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    /* Center align the table cells */
+    table th,
+    table td {
+        text-align: center;
+    }
+}
+
+/* Background image for the entire page (optional) */
+body {
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}

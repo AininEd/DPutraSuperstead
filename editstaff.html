@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Staff</title>
+    <link rel="stylesheet" href="dputraproduct.css">
+</head>
+<body>
+    <img src="dputraimg/applogodputra.png" class="logoimg">
+    <div class="mytitle">Edit Staff<hr><br></div>
+    <div class="boxform">
+        <div class="titleform">Edit Staff<hr></div>
+        <form id="editStaffForm">
+            <table>
+                <tr>
+                    <td><br><br>Name&nbsp;&nbsp;&nbsp;&nbsp;<br><br></td>
+                    <td><br><br><input type="text" name="staffname" id="staffname" class="tinput"><br><br></td>
+                </tr>
+                <tr>
+                    <td>Email<br><br></td>
+                    <td><input type="email" name="staffemail" id="staffemail" class="tinput"><br><br></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="button" id="updateStaff" class="btnproduct">Update Staff</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <!-- Add the JavaScript code here -->
+    <script type="module">
+        // Import Firebase libraries
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getFirestore, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        // Your Firebase configuration here (replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Reference to Firestore
+        const db = getFirestore(app);
+
+        // Get the staff ID from the URL query parameters (optional)
+        const urlParams = new URLSearchParams(window.location.search);
+        const staffId = urlParams.get('staffId');
+
+        // Function to load staff data for editing
+        async function loadStaffDataForEditing(staffId) {
+            try {
+                if (!staffId) {
+                    alert("Staff ID not found.");
+                    return;
+                }
+
+                // Use the provided staffId directly to load the staff data
+                const staffRef = doc(db, "Workers", staffId);
+                const staffDoc = await getDoc(staffRef);
+
+                if (staffDoc.exists()) {
+                    const staffData = staffDoc.data();
+                    document.getElementById("staffname").value = staffData.name;
+                    document.getElementById("staffemail").value = staffData.email;
+                } else {
+                    alert("Staff not found.");
+                    window.location.href = "dputrastaff.html"; // Redirect to home page if staff not found
+                }
+            } catch (error) {
+                console.error("Error loading staff data:", error);
+            }
+        }
+
+        // Call the function to load staff data for editing (only if staffId is provided)
+        loadStaffDataForEditing(staffId);
+
+        // Update the staff data in Firestore when the "Update Staff" button is clicked
+        document.getElementById("updateStaff").addEventListener("click", async () => {
+            try {
+                const staffname = document.getElementById("staffname").value;
+                const staffemail = document.getElementById("staffemail").value;
+
+                if (!staffId) {
+                    alert("Staff ID not found.");
+                    return;
+                }
+
+                // Update the staff data in Firestore (use the provided staffId)
+                const staffRef = doc(db, "Workers", staffId);
+                await updateDoc(staffRef, {
+                    name: staffname,
+                    email: staffemail,
+                });
+
+                alert("Staff updated.");
+                window.location.href = "dputrastaff.html";
+            } catch (error) {
+                console.error("Error updating staff:", error);
+            }
+        });
+    </script>
+</body>
+</html>

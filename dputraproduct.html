@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D'PUTRA PRODUCT</title>
+    <link rel="stylesheet" href="dputraproduct.css">
+</head>
+<body>
+    <img src="dputraimg/applogodputra.png" class="logoimg">
+    <div class="mytitle">D'Putra Products</div>
+    <hr><br><br>
+    <table class="mytable">
+        <tr>
+            <th>No.</th>
+            <th>Product Name</th>
+            <th>Product Picture</th>
+            <th>Status</th>
+            <th>Product Price</th>
+            <th class="myrow">Action</th>
+        </tr>
+    </table>
+    <div class="box1"><a href="addproduct.html" class="addbtn" target="content" title="Add Product">+</a></div>
+
+    <!-- Add the JavaScript code here -->
+    <script type="module">
+        // Import Firebase libraries
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRBROMX4OsxBcbWCzgrs8KO7D0_FdpJdA",
+            authDomain: "membershipdputra.firebaseapp.com",
+            databaseURL: "https://membershipdputra-default-rtdb.firebaseio.com",
+            projectId: "membershipdputra",
+            storageBucket: "membershipdputra.appspot.com",
+            messagingSenderId: "328830670700",
+            appId: "1:328830670700:web:4f84714dc72f06e5088549",
+            measurementId: "G-WE1CGQQPH0"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Initialize Firestore
+        const db = getFirestore(app);
+
+        // Function to fetch and display data
+        async function displayDataInTable() {
+            const productTable = document.querySelector(".mytable");
+
+            // Query the Firestore "Products" collection
+            const querySnapshot = await getDocs(collection(db, "Products"));
+
+            // Counter for row numbering
+            let rowNumber = 1;
+
+            // Iterate through the documents and populate the table
+            querySnapshot.forEach((doc) => {
+                const productData = doc.data();
+
+                // Create a new table row for each product
+                const newRow = document.createElement("tr");
+
+                // Create table cells for each column
+                const numberCell = document.createElement("td");
+                numberCell.textContent = rowNumber++;
+
+                const nameCell = document.createElement("td");
+                nameCell.textContent = productData.Product_Name;
+
+                const pictureCell = document.createElement("td");
+                pictureCell.innerHTML = `<img class="product-image" src="${productData.Picture_URL}" alt="Product Image">`;
+
+                const statusCell = document.createElement("td");
+                statusCell.textContent = productData.Halal_Status;
+
+                const priceCell = document.createElement("td");
+                priceCell.textContent = productData.Price;
+
+                const actionCell = document.createElement("td");
+                const editLink = document.createElement("a");
+                editLink.href = `editproduct.html?productId=${doc.id}`; // Include the product ID in the "Edit" link
+                editLink.textContent = "Edit";
+
+                // Create "Delete" link
+                const deleteLink = document.createElement("a");
+                deleteLink.href = `deleteproduct.html?productId=${doc.id}`; // Include the product ID in the "Delete" link
+                deleteLink.textContent = "Delete";
+
+                const space = document.createElement("span");
+                space.innerHTML = "&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;";
+
+                actionCell.appendChild(editLink);
+                actionCell.appendChild(space);
+                actionCell.appendChild(deleteLink);
+
+                // Append cells to the new row
+                newRow.appendChild(numberCell);
+                newRow.appendChild(nameCell);
+                newRow.appendChild(pictureCell);
+                newRow.appendChild(statusCell);
+                newRow.appendChild(priceCell);
+                newRow.appendChild(actionCell);
+
+                // Append the new row to the table
+                productTable.appendChild(newRow);
+            });
+        }
+
+        // Call the function to display data when the page loads
+        window.addEventListener("DOMContentLoaded", () => {
+            displayDataInTable();
+        });
+    </script>
+</body>
+</html>
